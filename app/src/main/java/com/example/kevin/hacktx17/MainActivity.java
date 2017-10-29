@@ -20,6 +20,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -35,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
-        leftAxis.setAxisMinimum(0);
-        leftAxis.setAxisMaximum(.2f);
 
         chart.getAxisRight().setDrawAxisLine(false);
         chart.getAxisRight().setDrawGridLines(false);
@@ -45,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(.2f);
 
         List<Entry> entries = new ArrayList<Entry>();
         try {
@@ -61,12 +60,34 @@ public class MainActivity extends AppCompatActivity {
                     lines.add(strings[i]);
                 }
             }
-            System.out.println("lines[i+1] ==" + lines.get(1));
+
             int i = 0;
             while (i < lines.size()) {
-                entries.add(new Entry(Float.parseFloat(lines.get(i+1)), Float.parseFloat(lines.get(i+2))));
+                //entries.add(new Entry(Float.parseFloat(lines.get(i+1)), Float.parseFloat(lines.get(i+2))));
+                entries.add(new Entry((float)i, Float.parseFloat(lines.get(i+2))));
                 i += 3;
             }
+
+            float minX = entries.get(0).getX();
+            float maxX = entries.get(0).getX();
+            for (int z = 0; z < entries.size(); z += 2) {
+                minX = min(minX, entries.get(z).getX());
+                maxX = max(maxX, entries.get(z).getX());
+            }
+
+            float minY = entries.get(1).getY();
+            float maxY = entries.get(1).getY();
+            for (int z = 0; z < entries.size(); z += 2) {
+                minY = min(minY, entries.get(z).getY());
+                maxY = max(maxY, entries.get(z).getY());
+            }
+
+            xAxis.setAxisMinimum(minX);
+            xAxis.setAxisMaximum(maxX);
+
+            leftAxis.setAxisMinimum(minY);
+            leftAxis.setAxisMaximum(maxY);
+
         } catch (IOException e) {
             Log.d("1", "Invalid input file!");
         }
@@ -79,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         dataSet.setDrawHighlightIndicators(false);
         dataSet.setCircleColor(Color.BLACK);
         dataSet.setCircleColorHole(Color.BLACK);
-        
+
 
 
         LineData lineData = new LineData(dataSet);
