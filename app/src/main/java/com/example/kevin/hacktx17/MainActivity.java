@@ -131,5 +131,8 @@ public class MainActivity extends AppCompatActivity {
         chart.setData(lineData);
         chart.invalidate();
 
+
+
+
     }
 }
