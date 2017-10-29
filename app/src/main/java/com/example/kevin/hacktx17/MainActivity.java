@@ -17,7 +17,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.max;
@@ -50,22 +52,44 @@ public class MainActivity extends AppCompatActivity {
         List<Entry> entries = new ArrayList<Entry>();
         try {
             List<String> lines = new ArrayList<>();
-            InputStream is = this.getAssets().open("ProcessedData.txt");
+            //InputStream is = this.getAssets().open("ProcessedData.txt");
+            InputStream is = this.getAssets().open("PointBCC.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line;
 
+            /*
             while ((line = reader.readLine()) != null) {
                 String[] strings = line.split(" ");
                 for (int i = 0; i < strings.length; i++) {
                     lines.add(strings[i]);
                 }
             }
+            */
+            ArrayList<String> sorted = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                sorted.add(line);
+            }
+            Collections.sort(sorted);
+
+            String[] temp;
+            for (int i = 0; i < sorted.size(); i++) {
+                temp = sorted.get(i).split(" ");
+                lines.add(temp[0]);
+                lines.add(temp[1]);
+                lines.add(temp[2]);
+                lines.add(temp[3]);
+                lines.add(temp[4]);
+            }
+
+
+
 
             int i = 0;
             while (i < lines.size()) {
                 //entries.add(new Entry(Float.parseFloat(lines.get(i+1)), Float.parseFloat(lines.get(i+2))));
-                entries.add(new Entry((float)i, Float.parseFloat(lines.get(i+2))));
-                i += 3;
+                //entries.add(new Entry((float)i, Float.parseFloat(lines.get(i+2))));
+                entries.add(new Entry((float)i, Float.parseFloat(lines.get(i+3))));
+                i += 5;
             }
 
             float minX = entries.get(0).getX();
